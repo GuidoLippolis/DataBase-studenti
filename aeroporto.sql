@@ -10,7 +10,7 @@ create table if not exists aeroporto (
 );
 
 create table if not exists volo (
-	idVolo char(5),
+    idVolo char(5),
     giornoSett varchar(10),
     cittaPart varchar(10) not null,
     oraPart numeric(2) not null,
@@ -19,17 +19,6 @@ create table if not exists volo (
     tipoAereo varchar(10) not null,
     primary key (idVolo, giornoSett)
     /* foreign key (tipoAereo) references aereo(tipoAereo) DOMANDA: perché non funziona il vincolo? */
-);
-
-create table if not exists voliInternazionali (
-	idVolo char(5),
-    giornoSett varchar(10),
-    cittaPart varchar(10) not null,
-    oraPart numeric(2) not null,
-    cittaArr varchar(10) not null,
-    oraArr numeric(2) not null,
-    tipoAereo varchar(10) not null,
-    primary key (idVolo, giornoSett)
 );
 
 create table if not exists aereo (
@@ -74,6 +63,21 @@ insert into volo(idVolo,giornoSett,cittaPart,oraPart,cittaArr,oraArr,tipoAereo)
     
 insert into volo(idVolo,giornoSett,cittaPart,oraPart,cittaArr,oraArr,tipoAereo)
 	values('BC456','Venerdi','Parigi',12,'Bari',14,'Boeing');
+
+insert into volo(idVolo,giornoSett,cittaPart,oraPart,cittaArr,oraArr,tipoAereo)
+	values('BC789','Sabato','Berlino',8,'Parigi', 9, 'Linea');
+
+insert into volo(idVolo,giornoSett,cittaPart,oraPart,cittaArr,oraArr,tipoAereo)
+	values('DE123','Lunedi','Milano',8,'Marsiglia', 9, 'Boeing');
+
+insert into volo(idVolo,giornoSett,cittaPart,oraPart,cittaArr,oraArr,tipoAereo)
+	values('DE456','Martedi','Marsiglia',8,'Milano', 9, 'Boeing');
+    
+insert into volo(idVolo,giornoSett,cittaPart,oraPart,cittaArr,oraArr,tipoAereo)
+	values('DE789','Mercoledi','Roma',13,'Bologna', 15, 'Regionale');
+    
+insert into volo(idVolo,giornoSett,cittaPart,oraPart,cittaArr,oraArr,tipoAereo)
+	values('EF123','Giovedi','Bologna',15,'Roma', 17, 'Regionale');
     
 insert into aereo(tipoAereo,numPasseggeri,qtaMerci)
 	values('Linea',50,350);
@@ -123,7 +127,13 @@ order by cittaPart*/
 /* Trovare le città francesi da cui partono più di 3 voli alla settimana diretti in italia
 SELECT DISTINCT nazione
 FROM aeroporto JOIN volo ON (citta = cittaPart)
-WHERE nazione = 'Francia' AND EXISTS ( SELECT count(*) as NumVoliSett
-			               FROM volo
+WHERE nazione = 'Francia' AND EXISTS ( SELECT count(*) AS NumVoliSett
+				       FROM volo
                                        GROUP BY cittaPart
                                        HAVING (NumVoliSett > 3) )*/
+                                       
+/* Trovare le città che sono servite dall'aereo caratterizzato dal massimo numero di passeggeri
+SELECT DISTINCT citta
+FROM aeroporto JOIN volo ON citta = cittaPart JOIN aereo ON volo.tipoAereo = aereo.tipoAereo
+WHERE numPasseggeri = ( SELECT MAX(numPasseggeri)
+			FROM aereo )*/
