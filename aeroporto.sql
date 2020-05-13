@@ -3,7 +3,7 @@ create database aeroporto;
 use aeroporto;
 
 create table if not exists aeroporto (
-	citta varchar(15),
+    citta varchar(15),
     nazione varchar(15) not null,
     numPiste numeric(2),
     primary key (citta)
@@ -18,11 +18,11 @@ create table if not exists volo (
     oraArr numeric(2) not null,
     tipoAereo varchar(10) not null,
     primary key (idVolo, giornoSett)
-    /* foreign key (tipoAereo) references aereo(tipoAereo) Chiedere perché non funziona il vincolo */
+    /* foreign key (tipoAereo) references aereo(tipoAereo) DOMANDA: perché non funziona il vincolo? */
 );
 
 create table if not exists aereo (
-	tipoAereo varchar(10),
+    tipoAereo varchar(10),
     numPasseggeri numeric(2),
     qtaMerci numeric(3) not null,
     primary key (tipoAereo)
