@@ -11,14 +11,13 @@ create table if not exists corso_di_laurea (
 
 create table if not exists studente (
     matricola numeric(6) check(matricola > 0),
-    corso_laurea varchar(15) not null,
+    corso_laurea char(4) check(length(corso_laurea) = 4) not null,
     nome varchar(15) not null,
     cognome varchar(15) not null,
     data_nascita date not null,
     codice_fiscale char(16) unique check(length(codice_fiscale) = 16),
-    primary key(matricola)
-    /* foreign key (corso_laurea) references corso_di_laurea(nome_corso_laurea)
-    vincolo non funzionante */
+    primary key(matricola),
+    foreign key (corso_laurea) references corso_di_laurea(codice_corso_laurea)
 );
 
 create table if not exists dipartimento (
@@ -29,14 +28,13 @@ create table if not exists dipartimento (
 
 create table if not exists docente (
     matricola numeric(6) check(matricola > 0),
-    dipartimento varchar(15) not null,
+    dipartimento char(4) check(length(dipartimento) = 4) not null,
     nome varchar(15) not null,
     cognome varchar(15) not null,
     data_nascita date not null,
     codice_fiscale char(16) unique check(length(codice_fiscale) = 16),
-    primary key(matricola)
-    /* foreign key (dipartimento) references dipartimento(nome)
-       Anche qui il vincolo NON funziona: FAILED TO OPEN THE REFERENCED TABLE 'DIPARTIMENTO' */
+    primary key(matricola),
+    foreign key (dipartimento) references dipartimento(codice)
 );
 
 create table if not exists modulo (
@@ -58,7 +56,6 @@ create table if not exists esame (
     foreign key(codice_modulo) references modulo(codice),
     foreign key(matricola_studente) references studente(matricola),
     foreign key(matricola_docente) references docente(matricola)
-    /* Qui i vincoli funzionano: se provo a registrare un esame di una matricola non presente in STUDENTI dà errore */
 );
 
 create table if not exists sede (
@@ -97,31 +94,31 @@ insert into corso_di_laurea(codice_corso_laurea,nome_corso_laurea)
 /* INSERIMENTO STUDENTI */
 
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values(697768,'Informatica','Guido','Lippolis','2000-02-20','LPPGDU00B20L049S');
+	values(697768,'ABC1','Guido','Lippolis','2000-02-20','LPPGDU00B20L049S');
 
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values(123456,'Informatica','Flavio','Collocola','1999-06-28','CLLFLV99H28L049Z');
+	values(123456,'ABC1','Flavio','Collocola','1999-06-28','CLLFLV99H28L049Z');
     
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values('453675','Informatica','Pierpaolo','Mariani','1998-08-5','MRNPPL98M05L049Z');
+	values('453675','ABC1','Pierpaolo','Mariani','1998-08-5','MRNPPL98M05L049Z');
     
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values('427684','Informatica','Andrea','Costantini','1999-12-28','CSTNDR99T28E506P');
+	values('427684','ABC1','Andrea','Costantini','1999-12-28','CSTNDR99T28E506P');
 
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values('561769','Informatica','Claudio','Minardi','1999-09-26','MNRCLD99P26L049F');
+	values('561769','ABC1','Claudio','Minardi','1999-09-26','MNRCLD99P26L049F');
    
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values('187945','Informatica','Luca','Fabbiano','1999-11-22','FBBLCU99S22L049G');
+	values('187945','ABC1','Luca','Fabbiano','1999-11-22','FBBLCU99S22L049G');
     
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values('423712','Informatica','Francesco','Scarci','2000-02-23','SCRFNC00B23L049S');
+	values('423712','ABC1','Francesco','Scarci','2000-02-23','SCRFNC00B23L049S');
     
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values('285634','Informatica','Simone','Marchitelli','1999-06-21','MRCSMN99H21F205F');
+	values('285634','ABC1','Simone','Marchitelli','1999-06-21','MRCSMN99H21F205F');
     
 insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fiscale)
-	values('955877','Informatica','Gianluca','Fornaro','1998-08-20','FRNGLC98M21L049S');
+	values('955877','ABC1','Gianluca','Fornaro','1998-08-20','FRNGLC98M21L049S');
     
 /* INSERIMENTO DIPARTIMENTI */
 
@@ -143,22 +140,25 @@ insert into dipartimento(codice,nome)
 /* INSERIMENTO DOCENTI */
    
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(573987,'Informatica','Carmelo','Ardito','1975-07-15','RDTCML75L15A662S');
+	values(573987,'A123','Carmelo','Ardito','1975-07-15','RDTCML75L15A662S');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(672987,'Informatica','Ciro','Castiello','1976-09-23','CSTCRI76P23A662M');
+	values(672987,'A123','Ciro','Castiello','1976-09-23','CSTCRI76P23A662M');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(176845,'Matematica','Genni','Fragnelli','1974-05-20','FRGGNN74E20G478C');
+	values(176845,'A456','Genni','Fragnelli','1974-05-20','FRGGNN74E20G478C');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(287698,'Informatica','Marco','De Gemmis','1974-06-20','DGMMRC74H20A662Q');
+	values(287698,'A123','Marco','De Gemmis','1974-06-20','DGMMRC74H20A662Q');
 
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(397546,'Matematica','Michele','Fiorentino','1980-02-10','FRNMHL80B10A662H');
+	values(397546,'A456','Michele','Fiorentino','1980-02-10','FRNMHL80B10A662H');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(674123,'Informatica','Fedelucio','Narducci','1979-04-20','NRDFLC79D20A662N');
+	values(674123,'A123','Fedelucio','Narducci','1979-04-20','NRDFLC79D20A662N');
+    
+insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
+	values(734987,'A123','Miguel','Ceriani','1974-01-5','CRNMGL74A05L049W');
 
 /* INSERIMENTO MODULI */
 
@@ -179,6 +179,9 @@ insert into modulo(codice,nome,cfu)
     
 insert into modulo(codice,nome,cfu)
 	values('006','Laboratorio di Informatica',6);
+    
+insert into modulo(codice,nome,cfu)
+	values('007','Basi di Dati',9);
 
 /* INSERIMENTO ESAMI */
 
@@ -203,25 +206,34 @@ insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,
 insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
 	values(123456,'005',397546,'2019-06-05',30);
     
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(423712,'005',397546,'2019-06-05',23);
+    
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(423712,'001',573987,'2019-01-23',25);
+    
 /* INSERIMENTO SEDI */
 
 insert into sede(codice,indirizzo,citta)
 	values('123A','Viale del lavoro','Taranto');
     
 insert into sede(codice,indirizzo,citta)
-	values('456A','Viale Ionio','Taranto');
+	values('456A','Viale Ionio','Bari');
 
 insert into sede(codice,indirizzo,citta)
-	values('789A','Corso Umberto','Taranto');
+	values('789A','Corso Umberto','Bari');
     
 insert into sede(codice,indirizzo,citta)
 	values('123B','Corso Italia','Taranto');
     
 insert into sede(codice,indirizzo,citta)
-	values('456B','Via Dante','Taranto');
+	values('456B','Via Dante','Brindisi');
     
 insert into sede(codice,indirizzo,citta)
-	values('789B','Via Campania','Taranto');
+	values('789B','Via Campania','Barletta');
+    
+insert into sede(codice,indirizzo,citta)
+	values('456Z','Via Polibio','Brindisi');
     
 /* INSERIMENTO SEDI DIPARTIMENTI */
 
@@ -239,3 +251,85 @@ insert into sede_dipartimento(codice_sede,codice_dipartimento)
     
 insert into sede_dipartimento(codice_sede,codice_dipartimento)
 	values('456B','B123');
+    
+ insert into sede_dipartimento(codice_sede,codice_dipartimento)
+	values('456Z','B123');   
+    
+/* QUERY DI ESERCITAZIONE */
+    
+/* 1. Mostrare nome e descrizione di tutti i moduli da 9 CFU
+SELECT nome, descrizione
+FROM modulo
+WHERE cfu = 9 */
+
+/* 2. Mostrare matricola, nome e cognome dei docenti che hanno più di 60 anni
+SELECT matricola, nome, cognome
+FROM docente
+WHERE data_nascita < '1959-01-01' */
+
+/* 3. Mostrare nome, cognome e nome del dipartimento di ogni docente, ordinati dal più giovane al più anziano
+SELECT docente.nome, cognome, D.nome as NomeDipartimento
+FROM docente JOIN dipartimento D ON dipartimento = D.nome
+ORDER BY docente.data_nascita */
+
+/* 4. Mostrare citta e indirizzo di ogni sede del dipartimento con codice "A123"
+SELECT citta, indirizzo
+FROM sede JOIN sede_dipartimento ON sede.codice = codice_sede
+WHERE codice_dipartimento = 'A123' */
+
+/* 5. Mostrare nome del dipartimento, città e indirizzo di ogni sede di ogni dipartimento, ordinate alfabeticamente prima per
+nome dipartimento, poi per nome città e infine per indirizzo
+SELECT dipartimento.nome, citta, indirizzo
+FROM sede_dipartimento JOIN dipartimento ON dipartimento.codice = codice_dipartimento JOIN sede ON sede.codice = codice_sede
+ORDER BY dipartimento.nome */
+
+/* 6. Mostrare il nome di ogni dipartimento che ha una sede a Bari
+SELECT dipartimento.nome
+FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento ON dipartimento.codice = codice_dipartimento
+WHERE citta = 'Bari' */
+
+/* 7. Mostrare il nome di ogni dipartimento che ha una sede a Bari
+SELECT dipartimento.nome
+FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento ON dipartimento.codice = codice_dipartimento
+WHERE citta != 'Brindisi' */
+
+/* 8. Mostrare media, numero esami sostenuti e totale CFU acquisiti dello studente con matricola 697768
+SELECT AVG(voto) AS MediaVoti, SUM(cfu) AS TotCFU, count(*) AS NumEsamiSostenuti
+FROM esame JOIN modulo ON codice_modulo = modulo.codice
+WHERE matricola_studente = 697768 */
+
+/* 9. Mostrare nome, cognome, nome del corso di laurea, media e numero esami sostenuti dello studente con matricola 697768
+SELECT studente.nome, studente.cognome, corso_laurea, AVG(voto) AS MediaVoti, count(*) AS NumEsamiSuperati
+FROM studente JOIN esame ON studente.matricola = matricola_studente
+WHERE matricola_studente = 697768
+GROUP BY matricola_studente */
+
+/* 10. Mostrare codice, nome e voto medio di ogni modulo, ordinati dalla media più alta alla più bassa
+SELECT codice_modulo, modulo.nome, AVG(voto) AS MediaPerModulo
+FROM modulo JOIN esame ON modulo.codice = codice_modulo
+GROUP BY codice_modulo; */
+
+/* 11. Mostrare nome e cognome del docente, nome e descrizione del modulo per ogni docente ed ogni modulo di
+   cui quel docente abbia tenuto almeno un esame; il risultato deve includere anche i docenti che non abbiano
+   tenuto alcun esame, in quel caso rappresentati con un'unica tupla in cui nome e descrizione del modulo
+   avranno valore NULL
+SELECT docente.nome, docente.cognome, modulo.nome AS NomeModulo, modulo.descrizione, COUNT(*) AS NumEsamiPerDocente
+FROM modulo RIGHT JOIN esame ON modulo.codice = codice_modulo RIGHT JOIN docente ON matricola_docente = docente.matricola
+GROUP BY modulo.nome
+HAVING(NumEsamiPerDocente >= 1) */
+   
+/* 12. Mostrare matricola, nome, cognome, data di nascita, media e numero esami sostenuti di ogni studente */
+
+/* 13. Mostrare matricola, nome, cognome, data di nascita, media e numero esami sostenuti di ogni studente del corso
+   di laurea di codice "ICD" che abbia media maggiore di 27 */
+   
+/* 14. Mostrare nome, cognome e data di nascita di tutti gli studenti che ancora non hanno superato nessun esame */
+
+/* 15. Mostrare la matricola di tutti gli studenti che hanno superato almeno un esame e che hanno preso sempre voti maggiori di 26 */
+
+/* 16. Mostrare, per ogni modulo, il numero degli studenti che hanno preso tra 18 e 21, quelli che hanno preso tra 22
+    e 26 e quelli che hanno preso tra 27 e 30 (con un'unica interrogazione) */
+    
+/* 17. Mostrare matricola, nome, cognome e voto di ogni studente che ha preso un voto maggiore della media nel modulo "BDD" */
+
+/* 18. Mostrare matricola, nome, cognome di ogni studente che ha preso ad almeno 3 esami un voto maggiore della media per quel modulo */
