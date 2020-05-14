@@ -2,6 +2,8 @@ drop database if exists aeroporto;
 create database aeroporto;
 use aeroporto;
 
+/* Esercizio 4.14 pag. 146 */
+
 create table if not exists aeroporto (
     citta varchar(15),
     nazione varchar(15) not null,
@@ -92,39 +94,39 @@ insert into aereo(tipoAereo,numPasseggeri,qtaMerci)
 	values('Regionale',80,450);
     
 /*
-Trovare le città con un aeroporto di cui non è noto il numero di piste
+1. Trovare le città con un aeroporto di cui non è noto il numero di piste
 SELECT *
 FROM aeroporto
 WHERE numPiste is null */
 
 /*
-Trovare le nazioni da cui parte e arriva un volo con codice BC123
+2. Trovare le nazioni da cui parte e arriva un volo con codice BC123
 SELECT nazione
 FROM aeroporto JOIN volo P ON citta = P.cittaPart JOIN volo A ON citta = A.cittaArr
 WHERE A.idVolo = 'BC123'*/
 
 /*
-Trovare i tipi di aereo usati nei voli che partono da Bologna
+3. Trovare i tipi di aereo usati nei voli che partono da Bologna
 SELECT tipoAereo
 FROM volo
 WHERE cittaPart = 'Bologna'*/
 
 /*
-Trovare i tipi di aereo e il corrispondente numero di passeggeri per i tipi di aereo usati nei voli che partono da Taranto
+4. Trovare i tipi di aereo e il corrispondente numero di passeggeri per i tipi di aereo usati nei voli che partono da Taranto
 SELECT volo.tipoAereo, aereo.numPasseggeri
 FROM volo JOIN aereo ON volo.tipoAereo = aereo.tipoAereo
 WHERE cittaPart = 'Taranto'*/
 
 /*
-Trovare le città da cui partono voli diretti a Bologna, ordinate alfabeticamente
+6. Trovare le città da cui partono voli diretti a Bologna, ordinate alfabeticamente
 SELECT cittaPart
 FROM volo
 WHERE cittaArr = 'Bologna'
 order by cittaPart*/
 
-/* DOMANDA: come trovo i voli internazionali? */
+/* DOMANDA: come trovo i voli internazionali e interni? (query 5, 7, 8, 10) */
 
-/* Trovare le città francesi da cui partono più di 3 voli alla settimana diretti in italia
+/* 9. Trovare le città francesi da cui partono più di 3 voli alla settimana diretti in italia
 SELECT DISTINCT nazione
 FROM aeroporto JOIN volo ON (citta = cittaPart)
 WHERE nazione = 'Francia' AND EXISTS ( SELECT count(*) AS NumVoliSett
@@ -132,7 +134,7 @@ WHERE nazione = 'Francia' AND EXISTS ( SELECT count(*) AS NumVoliSett
                                        GROUP BY cittaPart
                                        HAVING (NumVoliSett > 3) )*/
                                        
-/* Trovare le città che sono servite dall'aereo caratterizzato dal massimo numero di passeggeri
+/* 11. Trovare le città che sono servite dall'aereo caratterizzato dal massimo numero di passeggeri
 SELECT DISTINCT citta
 FROM aeroporto JOIN volo ON citta = cittaPart JOIN aereo ON volo.tipoAereo = aereo.tipoAereo
 WHERE numPasseggeri = ( SELECT MAX(numPasseggeri)
