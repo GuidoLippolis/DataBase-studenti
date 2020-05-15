@@ -66,7 +66,7 @@ create table if not exists sede (
 );
 
 create table if not exists sede_dipartimento (
-    codice_sede char(4) check(length(codice_sede) = 4),
+	codice_sede char(4) check(length(codice_sede) = 4),
     codice_dipartimento char(4) check(length(codice_dipartimento) = 4),
     note varchar(30),
     primary key(codice_sede),
@@ -212,6 +212,15 @@ insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,
 insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
 	values(423712,'001',573987,'2019-01-23',25);
     
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(123456,'007',734987,'2020-06-23',30);
+    
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(697768,'007',734987,'2020-06-23',28);
+    
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(423712,'007',734987,'2020-06-23',25);
+    
 /* INSERIMENTO SEDI */
 
 insert into sede(codice,indirizzo,citta)
@@ -318,18 +327,45 @@ FROM modulo RIGHT JOIN esame ON modulo.codice = codice_modulo RIGHT JOIN docente
 GROUP BY modulo.nome
 HAVING(NumEsamiPerDocente >= 1) */
    
-/* 12. Mostrare matricola, nome, cognome, data di nascita, media e numero esami sostenuti di ogni studente */
+/* 12. Mostrare matricola, nome, cognome, data di nascita, media e numero esami sostenuti di ogni studente
+SELECT studente.matricola, studente.nome, studente.cognome, studente.data_nascita, AVG(voto) AS MediaVoti, COUNT(*) AS NumEsamiSostenuti
+FROM studente JOIN esame ON studente.matricola = esame.matricola_studente
+GROUP BY studente.matricola */
 
 /* 13. Mostrare matricola, nome, cognome, data di nascita, media e numero esami sostenuti di ogni studente del corso
-   di laurea di codice "ICD" che abbia media maggiore di 27 */
-   
-/* 14. Mostrare nome, cognome e data di nascita di tutti gli studenti che ancora non hanno superato nessun esame */
+   di laurea di codice "ICD" che abbia media maggiore di 24
+SELECT studente.matricola, studente.nome, studente.cognome, studente.data_nascita, AVG(voto) AS MediaVoti, COUNT(*) AS NumEsamiSostenuti
+FROM studente JOIN esame ON studente.matricola = esame.matricola_studente
+GROUP BY studente.matricola
+HAVING(MediaVoti > 24) */
+ 
+/* 14. Mostrare nome, cognome e data di nascita di tutti gli studenti che ancora non hanno superato nessun esame
+SELECT studente.nome, studente.cognome, studente.data_nascita
+FROM studente
+WHERE studente.matricola NOT IN ( SELECT matricola_studente
+				  FROM esame ) */
 
-/* 15. Mostrare la matricola di tutti gli studenti che hanno superato almeno un esame e che hanno preso sempre voti maggiori di 26 */
+/* 15. Mostrare la matricola di tutti gli studenti che hanno superato almeno un esame e che hanno preso sempre voti maggiori di 26
+SELECT S.matricola
+FROM studente S
+WHERE S.matricola IN ( SELECT matricola_studente
+		      FROM esame ) AND NOT EXISTS ( SELECT *
+						    FROM studente T JOIN esame ON T.matricola = esame.matricola_studente
+                                                    WHERE S.matricola = T.matricola AND voto < 26 ) */
 
 /* 16. Mostrare, per ogni modulo, il numero degli studenti che hanno preso tra 18 e 21, quelli che hanno preso tra 22
-    e 26 e quelli che hanno preso tra 27 e 30 (con un'unica interrogazione) */
+    e 26 e quelli che hanno preso tra 27 e 30 (con un'unica interrogazione)
+SELECT esame.matricola_studente, COUNT(*) AS NumEsami25_30
+FROM esame JOIN modulo ON esame.codice_modulo = modulo.codice
+WHERE voto >= 25 AND voto <= 30
+GROUP BY esame.matricola_studente
+Capire come fare tutto con una unica interrogazione */
     
-/* 17. Mostrare matricola, nome, cognome e voto di ogni studente che ha preso un voto maggiore della media nel modulo "BDD" */
+/* 17. Mostrare matricola, nome, cognome e voto di ogni studente che ha preso un voto maggiore della media nel modulo "BDD"
+SELECT studente.matricola, studente.nome, studente.cognome, voto, codice_modulo
+FROM studente JOIN esame ON studente.matricola = esame.matricola_studente
+WHERE codice_modulo = '007' AND voto >= ( SELECT AVG(voto) AS MediaVotiBDD
+					  FROM esame
+                                          WHERE codice_modulo = '007' ) */
 
 /* 18. Mostrare matricola, nome, cognome di ogni studente che ha preso ad almeno 3 esami un voto maggiore della media per quel modulo */
