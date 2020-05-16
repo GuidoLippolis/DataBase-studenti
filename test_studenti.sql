@@ -66,7 +66,7 @@ create table if not exists sede (
 );
 
 create table if not exists sede_dipartimento (
-	codice_sede char(4) check(length(codice_sede) = 4),
+    codice_sede char(4) check(length(codice_sede) = 4),
     codice_dipartimento char(4) check(length(codice_dipartimento) = 4),
     note varchar(30),
     primary key(codice_sede),
