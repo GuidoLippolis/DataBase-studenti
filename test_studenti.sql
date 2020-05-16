@@ -297,7 +297,7 @@ SELECT dipartimento.nome
 FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento ON dipartimento.codice = codice_dipartimento
 WHERE citta = 'Bari' */
 
-/* 7. Mostrare il nome di ogni dipartimento che ha una sede a Bari
+/* 7. Mostrare il nome di ogni dipartimento che non ha una sede a Brindisi
 SELECT dipartimento.nome
 FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento ON dipartimento.codice = codice_dipartimento
 WHERE citta != 'Brindisi' */
