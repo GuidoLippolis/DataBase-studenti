@@ -326,10 +326,11 @@ ORDER BY MediaPerModulo DESC */
    cui quel docente abbia tenuto almeno un esame; il risultato deve includere anche i docenti che non abbiano
    tenuto alcun esame, in quel caso rappresentati con un'unica tupla in cui nome e descrizione del modulo
    avranno valore NULL
-SELECT docente.nome, docente.cognome, modulo.nome AS NomeModulo, modulo.descrizione, COUNT(*) AS NumEsamiPerDocente
-FROM modulo RIGHT JOIN esame ON modulo.codice = codice_modulo RIGHT JOIN docente ON matricola_docente = docente.matricola
-GROUP BY modulo.nome
-HAVING(NumEsamiPerDocente >= 1) */
+SELECT DISTINCT docente.nome NomeDocente, docente.cognome CognomeDocente, modulo.nome NomeModulo, modulo.descrizione DescrizioneModulo
+FROM modulo JOIN esame ON modulo.codice = esame.codice_modulo JOIN docente ON esame.matricola_docente = docente.matricola
+WHERE docente.matricola IN ( SELECT esame.matricola_docente
+	                     FROM esame ) OR docente.matricola NOT IN ( SELECT esame.matricola_docente
+			        					FROM esame ) */
    
 /* 12. Mostrare matricola, nome, cognome, data di nascita, media e numero esami sostenuti di ogni studente
 SELECT studente.matricola, studente.nome, studente.cognome, studente.data_nascita, AVG(voto) AS MediaVoti, COUNT(*) AS NumEsamiSostenuti
@@ -362,8 +363,7 @@ WHERE S.matricola IN ( SELECT matricola_studente
 SELECT esame.matricola_studente, COUNT(*) AS NumEsami25_30
 FROM esame JOIN modulo ON esame.codice_modulo = modulo.codice
 WHERE voto >= 25 AND voto <= 30
-GROUP BY esame.matricola_studente
-Capire come fare tutto con un'unica interrogazione */
+GROUP BY esame.matricola_studente */
     
 /* 17. Mostrare matricola, nome, cognome e voto di ogni studente che ha preso un voto maggiore della media nel modulo "BDD"
 SELECT studente.matricola, studente.nome, studente.cognome, voto, codice_modulo
