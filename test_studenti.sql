@@ -159,6 +159,9 @@ insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fisc
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
 	values(734987,'ICD','Miguel','Ceriani','1974-01-5','CRNMGL74A05L049W');
+    
+insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
+	values(547123,'ICD','Enrichetta','Gentile','1954-03-12','GNTNCH54C12A662R');
 
 /* INSERIMENTO MODULI */
 
@@ -182,6 +185,9 @@ insert into modulo(codice,nome,cfu)
     
 insert into modulo(codice,nome,cfu)
 	values('007','Basi di Dati',9);
+    
+insert into modulo(codice,nome,cfu)
+	values('008','Fondamenti di Informatica',6);
 
 /* INSERIMENTO ESAMI */
 
@@ -223,6 +229,21 @@ insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,
     
 insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
 	values(955877,'005',573987,'2019-01-23',24);
+    
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(123456,'002',672987,'2019-02-05',30);
+
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(123456,'004',287698,'2019-06-06',30);
+    
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(123456,'003',176845,'2019-01-31',30);
+    
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(697768,'008',547123,'2020-01-21',30);
+
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(423712,'008',547123,'2020-01-21',18);
     
 /* INSERIMENTO SEDI */
 
@@ -330,7 +351,7 @@ SELECT DISTINCT docente.nome NomeDocente, docente.cognome CognomeDocente, modulo
 FROM modulo JOIN esame ON modulo.codice = esame.codice_modulo JOIN docente ON esame.matricola_docente = docente.matricola
 WHERE docente.matricola IN ( SELECT esame.matricola_docente
 	                     FROM esame ) OR docente.matricola NOT IN ( SELECT esame.matricola_docente
-			        					FROM esame ) */
+									FROM esame ) */
    
 /* 12. Mostrare matricola, nome, cognome, data di nascita, media e numero esami sostenuti di ogni studente
 SELECT studente.matricola, studente.nome, studente.cognome, studente.data_nascita, AVG(voto) AS MediaVoti, COUNT(*) AS NumEsamiSostenuti
@@ -348,28 +369,37 @@ HAVING(MediaVoti > 24) */
 SELECT studente.nome, studente.cognome, studente.data_nascita
 FROM studente
 WHERE studente.matricola NOT IN ( SELECT matricola_studente
-				  FROM esame ) */
+			          FROM esame ) */
 
 /* 15. Mostrare la matricola di tutti gli studenti che hanno superato almeno un esame e che hanno preso sempre voti maggiori di 26
 SELECT S.matricola
 FROM studente S
 WHERE S.matricola IN ( SELECT matricola_studente
 		       FROM esame ) AND NOT EXISTS ( SELECT *
-						     FROM studente T JOIN esame ON T.matricola = esame.matricola_studente
+		                                     FROM studente T JOIN esame ON T.matricola = esame.matricola_studente
                                                      WHERE S.matricola = T.matricola AND voto < 26 ) */
 
 /* 16. Mostrare, per ogni modulo, il numero degli studenti che hanno preso tra 18 e 21, quelli che hanno preso tra 22
     e 26 e quelli che hanno preso tra 27 e 30 (con un'unica interrogazione)
-SELECT esame.matricola_studente, COUNT(*) AS NumEsami25_30
+SELECT modulo.codice, modulo.nome,
+(SELECT count(*) FROM esame WHERE (esame.codice_modulo = modulo.codice AND (voto >= 18 AND voto <= 21))) AS Conteggio_18_21,
+(SELECT count(*) FROM esame WHERE (esame.codice_modulo = modulo.codice AND (voto >= 22 AND voto <= 26))) AS Conteggio_22_26,
+(SELECT count(*) FROM esame WHERE (esame.codice_modulo = modulo.codice AND (voto >= 27 AND voto <= 30))) AS Conteggio_27_30
 FROM esame JOIN modulo ON esame.codice_modulo = modulo.codice
-WHERE voto >= 25 AND voto <= 30
-GROUP BY esame.matricola_studente */
-    
+GROUP BY modulo.codice; */
+
 /* 17. Mostrare matricola, nome, cognome e voto di ogni studente che ha preso un voto maggiore della media nel modulo "BDD"
 SELECT studente.matricola, studente.nome, studente.cognome, voto, codice_modulo
 FROM studente JOIN esame ON studente.matricola = esame.matricola_studente
 WHERE codice_modulo = '007' AND voto >= ( SELECT AVG(voto) AS MediaVotiBDD
 					  FROM esame
-                                          WHERE codice_modulo = '007' ) */
-
-/* 18. Mostrare matricola, nome, cognome di ogni studente che ha preso ad almeno 3 esami un voto maggiore della media per quel modulo */
+                                          WHERE codice_modulo = '007' ) */                    
+									
+/* 18. Mostrare matricola, nome, cognome di ogni studente che ha preso ad almeno 3 esami un voto maggiore della media per quel modulo
+SELECT esame.matricola_studente, studente.nome, studente.cognome, COUNT(*) AS EsamiOltreMedia
+FROM esame JOIN modulo M ON esame.codice_modulo = M.codice JOIN studente ON studente.matricola = esame.matricola_studente
+WHERE voto > ( SELECT AVG(voto)
+	       FROM esame JOIN modulo N ON esame.codice_modulo = N.codice
+               WHERE M.codice = N.codice )
+GROUP BY esame.matricola_studente
+HAVING(EsamiOltreMedia >= 3) */
