@@ -21,14 +21,14 @@ create table if not exists studente (
 );
 
 create table if not exists dipartimento (
-    codice char(4) check(length(codice) = 4),
+    codice char(3) check(length(codice) = 3),
     nome varchar(15) not null,
     primary key (codice)
 );
 
 create table if not exists docente (
     matricola numeric(6) check(matricola > 0),
-    dipartimento char(4) check(length(dipartimento) = 4) not null,
+    dipartimento char(3) check(length(dipartimento) = 3) not null,
     nome varchar(15) not null,
     cognome varchar(15) not null,
     data_nascita date not null,
@@ -67,7 +67,7 @@ create table if not exists sede (
 
 create table if not exists sede_dipartimento (
     codice_sede char(4) check(length(codice_sede) = 4),
-    codice_dipartimento char(4) check(length(codice_dipartimento) = 4),
+    codice_dipartimento char(4) check(length(codice_dipartimento) = 3),
     note varchar(30),
     primary key(codice_sede),
     foreign key (codice_dipartimento) references dipartimento(codice),
@@ -123,42 +123,42 @@ insert into studente(matricola,corso_laurea,nome,cognome,data_nascita,codice_fis
 /* INSERIMENTO DIPARTIMENTI */
 
 insert into dipartimento(codice,nome)
-	values('A123','Informatica'); 
+	values('ICD','Informatica'); 
     
 insert into dipartimento(codice,nome)
-	values('A456','Matematica'); 
+	values('MAT','Matematica'); 
     
 insert into dipartimento(codice,nome)
-	values('A789','Giurisprudenza'); 
+	values('GIU','Giurisprudenza'); 
     
 insert into dipartimento(codice,nome)
-	values('B123','Fisica'); 
+	values('FIS','Fisica'); 
     
 insert into dipartimento(codice,nome)
-	values('B456','Chimica'); 
+	values('CHI','Chimica'); 
     
 /* INSERIMENTO DOCENTI */
    
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(573987,'A123','Carmelo','Ardito','1975-07-15','RDTCML75L15A662S');
+	values(573987,'ICD','Carmelo','Ardito','1975-07-15','RDTCML75L15A662S');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(672987,'A123','Ciro','Castiello','1976-09-23','CSTCRI76P23A662M');
+	values(672987,'ICD','Ciro','Castiello','1976-09-23','CSTCRI76P23A662M');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(176845,'A456','Genni','Fragnelli','1974-05-20','FRGGNN74E20G478C');
+	values(176845,'MAT','Genni','Fragnelli','1974-05-20','FRGGNN74E20G478C');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(287698,'A123','Marco','De Gemmis','1974-06-20','DGMMRC74H20A662Q');
+	values(287698,'ICD','Marco','De Gemmis','1974-06-20','DGMMRC74H20A662Q');
 
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(397546,'A456','Michele','Fiorentino','1980-02-10','FRNMHL80B10A662H');
+	values(397546,'MAT','Michele','Fiorentino','1980-02-10','FRNMHL80B10A662H');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(674123,'A123','Fedelucio','Narducci','1979-04-20','NRDFLC79D20A662N');
+	values(674123,'ICD','Fedelucio','Narducci','1979-04-20','NRDFLC79D20A662N');
     
 insert into docente(matricola,dipartimento,nome,cognome,data_nascita,codice_fiscale)
-	values(734987,'A123','Miguel','Ceriani','1974-01-5','CRNMGL74A05L049W');
+	values(734987,'ICD','Miguel','Ceriani','1974-01-5','CRNMGL74A05L049W');
 
 /* INSERIMENTO MODULI */
 
@@ -221,6 +221,9 @@ insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,
 insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
 	values(423712,'007',734987,'2020-06-23',25);
     
+insert into esame(matricola_studente,codice_modulo,matricola_docente,data_esame,voto)
+	values(955877,'005',573987,'2019-01-23',24);
+    
 /* INSERIMENTO SEDI */
 
 insert into sede(codice,indirizzo,citta)
@@ -247,22 +250,22 @@ insert into sede(codice,indirizzo,citta)
 /* INSERIMENTO SEDI DIPARTIMENTI */
 
 insert into sede_dipartimento(codice_sede,codice_dipartimento)
-	values('123A','A456');
+	values('123A','MAT');
     
 insert into sede_dipartimento(codice_sede,codice_dipartimento)
-	values('456A','A123');
+	values('456A','ICD');
     
 insert into sede_dipartimento(codice_sede,codice_dipartimento)
-	values('789A','A789');
+	values('789A','CHI');
     
 insert into sede_dipartimento(codice_sede,codice_dipartimento)
-	values('123B','B456');
+	values('123B','ICD');
     
 insert into sede_dipartimento(codice_sede,codice_dipartimento)
-	values('456B','B123');
+	values('456B','FIS');
     
  insert into sede_dipartimento(codice_sede,codice_dipartimento)
-	values('456Z','B123');   
+	values('456Z','CHI');
     
 /* QUERY DI ESERCITAZIONE */
     
@@ -277,28 +280,28 @@ FROM docente
 WHERE data_nascita < '1959-01-01' */
 
 /* 3. Mostrare nome, cognome e nome del dipartimento di ogni docente, ordinati dal più giovane al più anziano
-SELECT docente.nome, cognome, D.nome as NomeDipartimento
-FROM docente JOIN dipartimento D ON dipartimento = D.nome
+SELECT docente.nome, docente.cognome, D.nome as NomeDipartimento
+FROM docente JOIN dipartimento D ON docente.dipartimento = D.codice
 ORDER BY docente.data_nascita */
 
-/* 4. Mostrare citta e indirizzo di ogni sede del dipartimento con codice "A123"
+/* 4. Mostrare citta e indirizzo di ogni sede del dipartimento con codice "ICD"
 SELECT citta, indirizzo
 FROM sede JOIN sede_dipartimento ON sede.codice = codice_sede
-WHERE codice_dipartimento = 'A123' */
+WHERE codice_dipartimento = 'ICD' */
 
 /* 5. Mostrare nome del dipartimento, città e indirizzo di ogni sede di ogni dipartimento, ordinate alfabeticamente prima per
 nome dipartimento, poi per nome città e infine per indirizzo
-SELECT dipartimento.nome, citta, indirizzo
+SELECT dipartimento.nome AS NomeDipartimento, citta, indirizzo
 FROM sede_dipartimento JOIN dipartimento ON dipartimento.codice = codice_dipartimento JOIN sede ON sede.codice = codice_sede
 ORDER BY dipartimento.nome */
 
 /* 6. Mostrare il nome di ogni dipartimento che ha una sede a Bari
-SELECT dipartimento.nome
+SELECT dipartimento.nome AS NomeDipartimento
 FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento ON dipartimento.codice = codice_dipartimento
 WHERE citta = 'Bari' */
 
 /* 7. Mostrare il nome di ogni dipartimento che non ha una sede a Brindisi
-SELECT dipartimento.nome
+SELECT DISTINCT dipartimento.nome AS NomeDipartimento
 FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento ON dipartimento.codice = codice_dipartimento
 WHERE citta != 'Brindisi' */
 
@@ -308,15 +311,16 @@ FROM esame JOIN modulo ON codice_modulo = modulo.codice
 WHERE matricola_studente = 697768 */
 
 /* 9. Mostrare nome, cognome, nome del corso di laurea, media e numero esami sostenuti dello studente con matricola 697768
-SELECT studente.nome, studente.cognome, corso_laurea, AVG(voto) AS MediaVoti, count(*) AS NumEsamiSuperati
-FROM studente JOIN esame ON studente.matricola = matricola_studente
+SELECT studente.nome, studente.cognome, corso_di_laurea.nome_corso_laurea, AVG(voto) AS MediaVoti, count(*) AS NumEsamiSuperati
+FROM studente JOIN esame ON studente.matricola = matricola_studente JOIN corso_di_laurea ON codice_corso_laurea = studente.corso_laurea
 WHERE matricola_studente = 697768
 GROUP BY matricola_studente */
 
 /* 10. Mostrare codice, nome e voto medio di ogni modulo, ordinati dalla media più alta alla più bassa
 SELECT codice_modulo, modulo.nome, AVG(voto) AS MediaPerModulo
 FROM modulo JOIN esame ON modulo.codice = codice_modulo
-GROUP BY codice_modulo; */
+GROUP BY codice_modulo
+ORDER BY MediaPerModulo DESC */
 
 /* 11. Mostrare nome e cognome del docente, nome e descrizione del modulo per ogni docente ed ogni modulo di
    cui quel docente abbia tenuto almeno un esame; il risultato deve includere anche i docenti che non abbiano
@@ -349,9 +353,9 @@ WHERE studente.matricola NOT IN ( SELECT matricola_studente
 SELECT S.matricola
 FROM studente S
 WHERE S.matricola IN ( SELECT matricola_studente
-		      FROM esame ) AND NOT EXISTS ( SELECT *
-						    FROM studente T JOIN esame ON T.matricola = esame.matricola_studente
-                                                    WHERE S.matricola = T.matricola AND voto < 26 ) */
+		       FROM esame ) AND NOT EXISTS ( SELECT *
+						     FROM studente T JOIN esame ON T.matricola = esame.matricola_studente
+                                                     WHERE S.matricola = T.matricola AND voto < 26 ) */
 
 /* 16. Mostrare, per ogni modulo, il numero degli studenti che hanno preso tra 18 e 21, quelli che hanno preso tra 22
     e 26 e quelli che hanno preso tra 27 e 30 (con un'unica interrogazione)
@@ -359,7 +363,7 @@ SELECT esame.matricola_studente, COUNT(*) AS NumEsami25_30
 FROM esame JOIN modulo ON esame.codice_modulo = modulo.codice
 WHERE voto >= 25 AND voto <= 30
 GROUP BY esame.matricola_studente
-Capire come fare tutto con una unica interrogazione */
+Capire come fare tutto con un'unica interrogazione */
     
 /* 17. Mostrare matricola, nome, cognome e voto di ogni studente che ha preso un voto maggiore della media nel modulo "BDD"
 SELECT studente.matricola, studente.nome, studente.cognome, voto, codice_modulo
