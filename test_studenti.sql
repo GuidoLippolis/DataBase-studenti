@@ -315,7 +315,7 @@ WHERE codice_dipartimento = 'ICD' */
 /* SELECT citta, indirizzo
 FROM sede
 WHERE codice IN ( SELECT codice_sede
-			      FROM sede_dipartimento
+	          FROM sede_dipartimento
                   WHERE codice_dipartimento = 'ICD' ) */
                   
 /* Query n. 4 con operatore EXISTS */
@@ -323,7 +323,7 @@ WHERE codice IN ( SELECT codice_sede
 /* SELECT citta, indirizzo
 FROM sede
 WHERE EXISTS ( SELECT *
-			   FROM sede_dipartimento
+	       FROM sede_dipartimento
                WHERE codice_dipartimento = 'ICD' AND codice_sede = sede.codice ) */
 
 /* 5. Mostrare nome del dipartimento, città e indirizzo di ogni sede di ogni dipartimento, ordinate alfabeticamente prima per
