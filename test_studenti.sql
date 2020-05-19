@@ -310,6 +310,22 @@ SELECT citta, indirizzo
 FROM sede JOIN sede_dipartimento ON sede.codice = codice_sede
 WHERE codice_dipartimento = 'ICD' */
 
+/* Query n. 4 con operatore IN */
+
+/* SELECT citta, indirizzo
+FROM sede
+WHERE codice IN ( SELECT codice_sede
+			      FROM sede_dipartimento
+                  WHERE codice_dipartimento = 'ICD' ) */
+                  
+/* Query n. 4 con operatore EXISTS */
+
+/* SELECT citta, indirizzo
+FROM sede
+WHERE EXISTS ( SELECT *
+			   FROM sede_dipartimento
+               WHERE codice_dipartimento = 'ICD' AND codice_sede = sede.codice ) */
+
 /* 5. Mostrare nome del dipartimento, città e indirizzo di ogni sede di ogni dipartimento, ordinate alfabeticamente prima per
 nome dipartimento, poi per nome città e infine per indirizzo
 SELECT dipartimento.nome AS NomeDipartimento, citta, indirizzo
@@ -348,7 +364,7 @@ ORDER BY MediaPerModulo DESC */
    tenuto alcun esame, in quel caso rappresentati con un'unica tupla in cui nome e descrizione del modulo
    avranno valore NULL
 SELECT DISTINCT docente.nome NomeDocente, docente.cognome CognomeDocente, modulo.nome NomeModulo, modulo.descrizione DescrizioneModulo
-FROM modulo JOIN esame ON modulo.codice = esame.codice_modulo JOIN docente ON esame.matricola_docente = docente.matricola
+FROM modulo RIGHT JOIN esame ON modulo.codice = esame.codice_modulo RIGHT JOIN docente ON esame.matricola_docente = docente.matricola
 WHERE docente.matricola IN ( SELECT esame.matricola_docente
 	                     FROM esame ) OR docente.matricola NOT IN ( SELECT esame.matricola_docente
 									FROM esame ) */
