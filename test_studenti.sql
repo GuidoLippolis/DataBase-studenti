@@ -338,9 +338,11 @@ FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento 
 WHERE citta = 'Bari' */
 
 /* 7. Mostrare il nome di ogni dipartimento che non ha una sede a Brindisi
-SELECT DISTINCT dipartimento.nome AS NomeDipartimento
-FROM sede JOIN sede_dipartimento ON codice_sede = sede.codice JOIN dipartimento ON dipartimento.codice = codice_dipartimento
-WHERE citta != 'Brindisi' */
+SELECT dipartimento.nome
+FROM dipartimento
+WHERE dipartimento.codice NOT IN ( SELECT sede_dipartimento.codice_dipartimento
+				   FROM sede JOIN sede_dipartimento ON sede.codice = sede_dipartimento.codice_sede
+                                   WHERE citta = 'Brindisi' ) */
 
 /* 8. Mostrare media, numero esami sostenuti e totale CFU acquisiti dello studente con matricola 697768
 SELECT AVG(voto) AS MediaVoti, SUM(cfu) AS TotCFU, count(*) AS NumEsamiSostenuti
