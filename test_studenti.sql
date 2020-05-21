@@ -330,7 +330,7 @@ WHERE EXISTS ( SELECT *
 nome dipartimento, poi per nome città e infine per indirizzo
 SELECT dipartimento.nome AS NomeDipartimento, citta, indirizzo
 FROM sede_dipartimento JOIN dipartimento ON dipartimento.codice = codice_dipartimento JOIN sede ON sede.codice = codice_sede
-ORDER BY dipartimento.nome */
+ORDER BY dipartimento.nome, citta, indirizzo */
 
 /* 6. Mostrare il nome di ogni dipartimento che ha una sede a Bari
 SELECT dipartimento.nome AS NomeDipartimento
